@@ -1,0 +1,33 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="/static/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy">
+
+<title>wifi</title>
+
+<div class="container">
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <h1>wifi</h1>
+</nav>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">mac</th>
+      <th scope="col">ip</th>
+      <th scope="col">hostname</th>
+      <th scope="col">vendor</th>
+    </tr>
+  </thead>
+  <tbody>
+{{ range .Clients }}
+    <tr>
+      <td>{{ .MAC }}</td>
+      <td>{{ join .IPs ", " }}</td>
+      <td>{{ .Hostname }}</td>
+      <td>{{ .Vendor }}</td>
+    </tr>
+{{ end }}
+  </tbody>
+</table>
+</div>
