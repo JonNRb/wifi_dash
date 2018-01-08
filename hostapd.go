@@ -42,7 +42,7 @@ func (h *HostapdControl) Close() error {
 }
 
 func (h *HostapdControl) ListClients(ctx context.Context) ([]*pb.Client, error) {
-	res, err := h.client.ListClients(ctx, &pb.ListRequest{})
+	res, err := h.client.ListClients(ctx, &pb.ListClientsRequest{})
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing hostapd clients")
 	}
