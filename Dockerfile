@@ -7,5 +7,6 @@ run CGO_ENABLED=0 GOOS=linux go-wrapper download \
 
 from scratch
 copy --from=build /go/bin/wifi_dash /wifi_dash
-add ./index.html ./static/bootstrap.min.css /
+add index.html /
+add static/bootstrap.min.css /static/bootstrap.min.css
 entrypoint ["/wifi_dash"]
