@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"flag"
 	"html/template"
 	"net"
@@ -16,6 +17,11 @@ import (
 	"github.com/golang/glog"
 )
 
+var (
+	// not the ideal place for this flag
+	friendlySocketNames = flag.String("hostapd.friendly_socket_names", "", "JSON map providing friendly names for hostapd sockets (ideally the SSID)")
+)
+
 type DashServer struct {
 	h *http.Server
 
@@ -24,11 +30,14 @@ type DashServer struct {
 
 	hostapd *HostapdControl
 	dhcp    *DHCPStore
+
+	socketRename map[string]string
 }
 
 type Client struct {
 	MAC      net.HardwareAddr
 	IPs      []net.IP
+	AP       string
 	Hostname string
 	Vendor   string
 }
@@ -53,7 +62,12 @@ func (d *DashServer) render() (*Page, error) {
 			return nil, err
 		}
 
-		go func(mac net.HardwareAddr) {
+		ap, ok := d.socketRename[c.SocketName]
+		if !ok {
+			ap = c.SocketName
+		}
+
+		go func(mac net.HardwareAddr, ap string) {
 			ips, ci, err := d.dhcp.LookupDevice(ctx, mac)
 			if err != nil {
 				glog.Errorf("error looking up device \"%s\": %v", mac, err)
@@ -67,11 +81,12 @@ func (d *DashServer) render() (*Page, error) {
 				clientC <- Client{
 					MAC:      mac,
 					IPs:      ips,
+					AP:       ap,
 					Hostname: ci.Hostname,
 					Vendor:   ci.VendorClass,
 				}
 			}
-		}(mac)
+		}(mac, ap)
 	}
 
 	clients := make([]Client, len(connectedClients))
@@ -120,6 +135,13 @@ func main() {
 	flag.Set("logtostderr", "true")
 	flag.Parse()
 
+	var socketRename map[string]string
+	if *friendlySocketNames != "" {
+		if err := json.Unmarshal([]byte(*friendlySocketNames), &socketRename); err != nil {
+			glog.Exitf("-hostapd.friendly_socket_names must be JSON string to string map: %v", err)
+		}
+	}
+
 	static := http.StripPrefix("/static", http.FileServer(http.Dir("./static")))
 
 	index := template.New("root").New("index.html").Funcs(template.FuncMap{
@@ -155,10 +177,11 @@ func main() {
 	}()
 
 	d := &DashServer{
-		index:   index,
-		static:  static,
-		hostapd: hostapd,
-		dhcp:    dhcp,
+		index:        index,
+		static:       static,
+		hostapd:      hostapd,
+		dhcp:         dhcp,
+		socketRename: socketRename,
 	}
 	h := &http.Server{
 		Addr:           ":8080",

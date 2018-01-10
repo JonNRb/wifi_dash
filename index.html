@@ -14,6 +14,7 @@
   <thead>
     <tr>
       <th scope="col">mac</th>
+      <th scope="col">ap</th>
       <th scope="col">ip</th>
       <th scope="col">hostname</th>
       <th scope="col">vendor</th>
@@ -23,6 +24,7 @@
 {{ range .Clients }}
     <tr>
       <td>{{ .MAC }}</td>
+      <td>{{ .AP }}</td>
       <td>{{ join .IPs ", " }}</td>
       <td>{{ .Hostname }}</td>
       <td>{{ .Vendor }}</td>
