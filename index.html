@@ -16,8 +16,7 @@
       <th scope="col">mac</th>
       <th scope="col">ap</th>
       <th scope="col">ip</th>
-      <th scope="col">hostname</th>
-      <th scope="col">vendor</th>
+      <th scope="col">hostname <small><i>(vendor)</i></small></th>
     </tr>
   </thead>
   <tbody>
@@ -26,8 +25,16 @@
       <td>{{ .MAC }}</td>
       <td>{{ .AP }}</td>
       <td>{{ join .IPs ", " }}</td>
-      <td>{{ .Hostname }}</td>
-      <td>{{ .Vendor }}</td>
+      <td>
+  {{ if and (eq .Hostname "") (eq .Vendor "") }}
+  {{ else if eq .Hostname "" }}
+        <small><i>{{ .Vendor }}</i></small>
+  {{ else if eq .Vendor "" }}
+        {{ .Hostname }}
+  {{ else }}
+        {{ .Hostname }} <small><i>({{ .Vendor }})</i></small>
+  {{ end }}
+      </td>
     </tr>
 {{ end }}
   </tbody>
