@@ -37,13 +37,22 @@ type DashServer struct {
 type Client struct {
 	MAC      net.HardwareAddr
 	IPs      []net.IP
-	AP       string
 	Hostname string
 	Vendor   string
 }
 
-type Page struct {
+type ClientDenormalized struct {
+	Client
+	AP string
+}
+
+type AccessPoint struct {
+	Name    string
 	Clients []Client
+}
+
+type Page struct {
+	AccessPoints []AccessPoint
 }
 
 func (d *DashServer) render() (*Page, error) {
@@ -55,7 +64,7 @@ func (d *DashServer) render() (*Page, error) {
 		return nil, err
 	}
 
-	clientC := make(chan Client)
+	clientC := make(chan ClientDenormalized)
 	for _, c := range connectedClients {
 		mac, err := net.ParseMAC(c.Addr)
 		if err != nil {
@@ -71,33 +80,51 @@ func (d *DashServer) render() (*Page, error) {
 			ips, ci, err := d.dhcp.LookupDevice(ctx, mac)
 			if err != nil {
 				glog.Errorf("error looking up device \"%s\": %v", mac, err)
-				clientC <- Client{
-					MAC: mac,
+				clientC <- ClientDenormalized{
+					Client: Client{MAC: mac},
+					AP:     ap,
 				}
 			} else {
 				sort.Slice(ips, func(i, j int) bool {
 					return bytes.Compare(ips[i], ips[j]) == -1
 				})
-				clientC <- Client{
-					MAC:      mac,
-					IPs:      ips,
-					AP:       ap,
-					Hostname: ci.Hostname,
-					Vendor:   ci.VendorClass,
+				shortVendor := ci.VendorClass
+				if len(shortVendor) > 16 {
+					shortVendor = shortVendor[:13] + "..."
+				}
+				clientC <- ClientDenormalized{
+					Client: Client{
+						MAC:      mac,
+						IPs:      ips,
+						Hostname: ci.Hostname,
+						Vendor:   shortVendor,
+					},
+					AP: ap,
 				}
 			}
 		}(mac, ap)
 	}
 
-	clients := make([]Client, len(connectedClients))
+	apMap := make(map[string][]Client)
 	for i := 0; i < len(connectedClients); i++ {
-		clients[i] = <-clientC
+		c := <-clientC
+		apMap[c.AP] = append(apMap[c.AP], c.Client)
 	}
-	sort.Slice(clients, func(i, j int) bool {
-		return bytes.Compare(clients[i].MAC, clients[j].MAC) == -1
+	var aps []AccessPoint
+	for ap, clients := range apMap {
+		sort.Slice(clients, func(i, j int) bool {
+			return bytes.Compare(clients[i].MAC, clients[j].MAC) == -1
+		})
+		aps = append(aps, AccessPoint{
+			Name:    ap,
+			Clients: clients,
+		})
+	}
+	sort.Slice(aps, func(i, j int) bool {
+		return strings.Compare(aps[i].Name, aps[j].Name) == -1
 	})
 
-	return &Page{Clients: clients}, nil
+	return &Page{AccessPoints: aps}, nil
 }
 
 func (d DashServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

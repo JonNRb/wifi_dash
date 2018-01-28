@@ -10,33 +10,43 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light">
   <h1>wifi</h1>
 </nav>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">mac</th>
-      <th scope="col">ap</th>
-      <th scope="col">ip</th>
-      <th scope="col">hostname <small><i>(vendor)</i></small></th>
-    </tr>
-  </thead>
-  <tbody>
-{{ range .Clients }}
-    <tr>
-      <td>{{ .MAC }}</td>
-      <td>{{ .AP }}</td>
-      <td>{{ join .IPs ", " }}</td>
-      <td>
-  {{ if and (eq .Hostname "") (eq .Vendor "") }}
-  {{ else if eq .Hostname "" }}
-        <small><i>{{ .Vendor }}</i></small>
-  {{ else if eq .Vendor "" }}
-        {{ .Hostname }}
-  {{ else }}
-        {{ .Hostname }} <small><i>({{ .Vendor }})</i></small>
+
+{{ range .AccessPoints }}
+<div class="card" style="margin-top: 10pt;">
+  <div class="card-header" role="tab">
+    <h5 class="mb-0">{{ .Name }}</h5>
+  </div>
+
+  <div role="tabpanel">
+    <table class="table card-body">
+      <thead>
+        <tr>
+          <th scope="col">mac</th>
+          <th scope="col">ip</th>
+          <th scope="col">hostname <small><i>(vendor)</i></small></th>
+        </tr>
+      </thead>
+      <tbody>
+  {{ range .Clients }}
+        <tr>
+          <td>{{ .MAC }}</td>
+          <td>{{ join .IPs ", " }}</td>
+          <td>
+    {{ if and (eq .Hostname "") (eq .Vendor "") }}
+    {{ else if eq .Hostname "" }}
+            <small><i>{{ .Vendor }}</i></small>
+    {{ else if eq .Vendor "" }}
+            {{ .Hostname }}
+    {{ else }}
+            {{ .Hostname }} <small><i>({{ .Vendor }})</i></small>
+    {{ end }}
+          </td>
+        </tr>
   {{ end }}
-      </td>
-    </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 {{ end }}
-  </tbody>
-</table>
+
 </div>
