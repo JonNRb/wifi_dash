@@ -1,7 +1,8 @@
 from golang as build
 workdir /go/src/github.com/jonnrb/wifi_dash
 add . .
-run CGO_ENABLED=0 GOOS=linux go-wrapper download \
+run go get -u github.com/golang/dep/cmd/dep \
+ && dep ensure \
  && CGO_ENABLED=0 GOOS=linux go-wrapper install
 
 from gcr.io/distroless/base
