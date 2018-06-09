@@ -2,6 +2,7 @@
 
 A small dashboard I use to look at who's on my Wi-Fi network.
 
-I use [etcdhcp (forked)](https://github.com/JonNRb/etcdhcp) and
-[hostapd_grpc](https://github.com/JonNRb/hostapd_grpc) to source backend
+I use [etcdhcp](https://git.jonnrb.com/jon/etcdhcp)
+[(forked)](https://github.com/lclarkmichalek/etcdhcp) and
+[hostapd_grpc](https://git.jonnrb.com/jon/hostapd_grpc) to source backend
 data.
