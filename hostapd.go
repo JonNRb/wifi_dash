@@ -5,8 +5,8 @@ import (
 	"flag"
 	"time"
 
-	pb "github.com/jonnrb/hostapd_grpc/proto"
 	"github.com/pkg/errors"
+	"go.jonnrb.io/hostapd_grpc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -16,7 +16,7 @@ var (
 
 type HostapdControl struct {
 	conn   *grpc.ClientConn
-	client pb.HostapdControlClient
+	client hostapd.HostapdControlClient
 }
 
 func NewHostapdControl(ctx context.Context) (*HostapdControl, error) {
@@ -32,7 +32,7 @@ func NewHostapdControl(ctx context.Context) (*HostapdControl, error) {
 		return nil, err
 	}
 
-	client := pb.NewHostapdControlClient(conn)
+	client := hostapd.NewHostapdControlClient(conn)
 
 	return &HostapdControl{conn, client}, err
 }
@@ -41,8 +41,8 @@ func (h *HostapdControl) Close() error {
 	return h.conn.Close()
 }
 
-func (h *HostapdControl) ListClients(ctx context.Context) ([]*pb.Client, error) {
-	res, err := h.client.ListClients(ctx, &pb.ListClientsRequest{})
+func (h *HostapdControl) ListClients(ctx context.Context) ([]*hostapd.Client, error) {
+	res, err := h.client.ListClients(ctx, &hostapd.ListClientsRequest{})
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing hostapd clients")
 	}

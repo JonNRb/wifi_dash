@@ -11,7 +11,7 @@ import (
 	etcd "github.com/coreos/etcd/clientv3"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
-	etcdhcp "github.com/jonnrb/etcdhcp/proto"
+	"go.jonnrb.io/etcdhcp/proto"
 )
 
 type CommaSeparated []string
