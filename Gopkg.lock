@@ -43,22 +43,22 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/jonnrb/etcdhcp"
-  packages = ["proto"]
-  revision = "51f824246b7b11472781c89288ac829874f8a29c"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/jonnrb/hostapd_grpc"
-  packages = ["proto"]
-  revision = "49b221098b294d5ad79aeb2bcde49f12ef192bf5"
-
-[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "go.jonnrb.io/etcdhcp"
+  packages = ["proto"]
+  revision = "6b7d68e25d20a95da5537f918bc180afe1a49818"
+
+[[projects]]
+  branch = "master"
+  name = "go.jonnrb.io/hostapd_grpc"
+  packages = ["proto"]
+  revision = "4973c614bc7e1c06a19da6cebe20b00a0a3fa52d"
 
 [[projects]]
   branch = "master"
@@ -134,6 +134,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1cd932e1020475c5c2fad9353463184cb0276e3cb7e6dc9efe89077bdc2e5c8c"
+  inputs-digest = "de6dec4f5cbe4e73e652518af246ffb00d95ab90edb371923ead5f9ccb986568"
   solver-name = "gps-cdcl"
   solver-version = 1
