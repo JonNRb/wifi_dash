@@ -1,4 +1,4 @@
-# wifi_dash [![Docker Automated Build](https://img.shields.io/docker/automated/jonnrb/wifi_dash.svg)](https://hub.docker.com/r/jonnrb/wifi_dash/) [![Docker Build Status](https://img.shields.io/docker/build/jonnrb/wifi_dash.svg)](https://hub.docker.com/r/jonnrb/wifi_dash/)
+# wifi_dash [![Build Status](https://drone.jonnrb.com/api/badges/jon/wifi_dash/status.svg?branch=master)](https://drone.jonnrb.com/jon/wifi_dash)
 
 A small dashboard I use to look at who's on my Wi-Fi network.
 
