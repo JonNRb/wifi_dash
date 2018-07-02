@@ -27,16 +27,20 @@
     <table class="table card-body">
       <thead>
         <tr>
-          <th scope="col">mac</th>
-          <th scope="col">ip</th>
+          <th scope="col">ip <small><i>(mac)</i></small></th>
           <th scope="col">hostname <small><i>(vendor)</i></small></th>
         </tr>
       </thead>
       <tbody>
   {{ range .Clients }}
         <tr>
-          <td>{{ .MAC }}</td>
-          <td>{{ join .IPs ", " }}</td>
+          <td>
+    {{ if eq (len .IPs) 0 }}
+            <small><i>{{ .MAC }}</i></small>
+    {{ else }}
+            {{ join .IPs ", " }} <small><i>({{ .MAC }})</i></small>
+    {{ end }}
+          </td>
           <td>
     {{ if and (eq .Hostname "") (eq .Vendor "") }}
     {{ else if eq .Hostname "" }}
