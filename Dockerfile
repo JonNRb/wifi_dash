@@ -8,5 +8,5 @@ run go get -u github.com/golang/dep/cmd/dep \
 from gcr.io/distroless/base
 copy --from=build /go/src/go.jonnrb.io/wifi_dash/wifi_dash /wifi_dash
 add index.html /
-add static/bootstrap.min.css /static/bootstrap.min.css
+add static /static
 entrypoint ["/wifi_dash"]
