@@ -1,7 +1,19 @@
-pipeline:
-  docker:
-    image: plugins/docker
-    repo: jonnrb/wifi_dash
-    storage_driver: overlay2
-    secrets: [ docker_username, docker_password ]
+---
+kind: pipeline
+name: default
 
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: docker
+  image: plugins/docker
+  settings:
+    password:
+      from_secret: docker_password
+    repo: jonnrb/wifi_dash
+    username:
+      from_secret: docker_username
+
+...
