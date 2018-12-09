@@ -1,12 +1,9 @@
-from golang:1.10.3 as build
-workdir /go/src/go.jonnrb.io/wifi_dash
-add . .
-run go get -u github.com/golang/dep/cmd/dep \
- && dep ensure \
- && CGO_ENABLED=0 GOOS=linux go build .
+from golang:1.11.2 as build
+add . /src
+run cd /src && GOOS=linux CGO_ENABLED=0 go get -v .
 
 from gcr.io/distroless/base
-copy --from=build /go/src/go.jonnrb.io/wifi_dash/wifi_dash /wifi_dash
+copy --from=build /go/bin/wifi_dash /wifi_dash
 add index.html /
 add static /static
 entrypoint ["/wifi_dash"]
